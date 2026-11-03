@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "inter-level-progress-manager"
+  },
+  "targets": {
+    "inter-level-progress-manager": {
+      "hosting": {
+        "quiz-marks-projector": [
+          "quiz-marks-projector"
+        ]
+      }
+    }
+  }
+}
