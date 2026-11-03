@@ -1,28 +1,29 @@
 import { useEffect, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { subscribeToLeaderboard } from "@/lib/firebase/services"
 
 export default function Projector() {
   const [teams, setTeams] = useState<any[]>([])
+  const [searchParams] = useSearchParams()
+
+  // Real scenario expects ownerUid and quizId as query parameters for the projector view
+  const ownerUid = searchParams.get("owner")
+  const quizId = searchParams.get("quiz")
 
   useEffect(() => {
-    // In a real scenario, the ownerUid and quizId would be passed or extracted
-    const unsubscribe = subscribeToLeaderboard("mockOwner", "mockQuiz", (updatedTeams) => {
-      // Mock data for display purposes
-      if (updatedTeams.length === 0) {
-        setTeams([
-          { teamId: "t1", name: "TEAM ALPHA", totalScore: 25.5, color: "#3B82F6" },
-          { teamId: "t2", name: "TEAM GAMMA", totalScore: 23, color: "#10B981" },
-          { teamId: "t3", name: "TEAM BETA", totalScore: 21.5, color: "#F59E0B" },
-          { teamId: "t4", name: "TEAM DELTA", totalScore: 19, color: "#EF4444" },
-        ])
-      } else {
-        setTeams(updatedTeams)
-      }
+    if (!ownerUid || !quizId) return;
+
+    const unsubscribe = subscribeToLeaderboard(ownerUid, quizId, (updatedTeams) => {
+      setTeams(updatedTeams)
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [ownerUid, quizId])
+
+  if (!ownerUid || !quizId) {
+     return <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-8">Missing owner or quiz parameter in URL.</div>
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col p-8 overflow-hidden font-sans">
@@ -47,7 +48,7 @@ export default function Projector() {
               >
                 <div
                   className="absolute left-0 top-0 bottom-0 w-3"
-                  style={{ backgroundColor: team.color }}
+                  style={{ backgroundColor: team.color || '#ccc' }}
                 />
 
                 <div className="w-16 h-16 flex items-center justify-center bg-slate-950 rounded-xl mr-6 border border-slate-800 shadow-inner">
@@ -56,11 +57,11 @@ export default function Projector() {
                   </span>
                 </div>
 
-                <h3 className="text-4xl font-bold uppercase tracking-wider flex-1 truncate">{team.name}</h3>
+                <h3 className="text-4xl font-bold uppercase tracking-wider flex-1 truncate">{team.name || team.teamId}</h3>
 
                 <div className="bg-slate-950 px-8 py-4 rounded-xl border border-slate-800 min-w-[120px] text-center shadow-inner">
                   <span className="text-5xl font-black font-mono tracking-tighter text-white">
-                    {team.totalScore}
+                    {team.totalScore || 0}
                   </span>
                 </div>
               </motion.div>
@@ -84,11 +85,11 @@ export default function Projector() {
                   >
                     <div
                       className="absolute left-0 top-0 bottom-0 w-1.5"
-                      style={{ backgroundColor: team.color }}
+                      style={{ backgroundColor: team.color || '#ccc' }}
                     />
                     <span className="w-8 text-slate-500 font-bold ml-2">{index + 6}</span>
-                    <h4 className="flex-1 font-bold uppercase truncate">{team.name}</h4>
-                    <span className="text-xl font-black font-mono">{team.totalScore}</span>
+                    <h4 className="flex-1 font-bold uppercase truncate">{team.name || team.teamId}</h4>
+                    <span className="text-xl font-black font-mono">{team.totalScore || 0}</span>
                   </motion.div>
                 ))}
               </AnimatePresence>
