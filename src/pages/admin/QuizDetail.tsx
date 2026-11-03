@@ -74,13 +74,22 @@ export default function QuizDetail() {
           </div>
         </TabsContent>
         <TabsContent value="invigilators" className="mt-6">
-          <div className="text-slate-400 p-4 border border-slate-800 rounded-lg bg-slate-900">Invigilator access management coming soon.</div>
+          <div className="text-slate-400 p-4 border border-slate-800 rounded-lg bg-slate-900">
+            <h3 className="font-semibold text-white mb-2">Invigilator Access</h3>
+            <p>Active codes and invigilator sessions will appear here.</p>
+          </div>
         </TabsContent>
         <TabsContent value="results" className="mt-6">
-          <div className="text-slate-400 p-4 border border-slate-800 rounded-lg bg-slate-900">Results matrix coming soon.</div>
+          <div className="text-slate-400 p-4 border border-slate-800 rounded-lg bg-slate-900">
+            <h3 className="font-semibold text-white mb-2">Quiz Results</h3>
+             <p>Score matrix and ranking will appear here once the quiz goes live.</p>
+          </div>
         </TabsContent>
         <TabsContent value="settings" className="mt-6">
-          <div className="text-slate-400 p-4 border border-slate-800 rounded-lg bg-slate-900">Quiz settings coming soon.</div>
+          <div className="text-slate-400 p-4 border border-slate-800 rounded-lg bg-slate-900">
+            <h3 className="font-semibold text-white mb-2">Quiz Settings</h3>
+             <p>General configuration options (Title, Subtitle, Marks configuration).</p>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

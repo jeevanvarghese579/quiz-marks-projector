@@ -2,8 +2,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, HelpCircle, Trophy, Activity, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { getQuizzes } from "@/lib/firebase/services"
 
 export default function Dashboard() {
+  const [quizzes, setQuizzes] = useState<any[]>([])
+  const MOCK_ADMIN_UID = "admin-123"
+
+  useEffect(() => {
+    getQuizzes(MOCK_ADMIN_UID).then(setQuizzes).catch(console.error)
+  }, [])
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -13,7 +22,7 @@ export default function Dashboard() {
         </div>
         <div className="flex gap-2">
           <Button asChild variant="outline" className="border-indigo-500/50 text-indigo-400 hover:bg-indigo-500/10">
-            <Link to="/projector">
+            <Link to="/projector?owner=admin-123&quiz=active">
               <Play className="w-4 h-4 mr-2" />
               Project Results
             </Link>
@@ -31,7 +40,7 @@ export default function Dashboard() {
             <Activity className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">2</div>
+            <div className="text-2xl font-bold">{quizzes.length}</div>
           </CardContent>
         </Card>
         <Card className="bg-slate-900 border-slate-800">
@@ -40,7 +49,7 @@ export default function Dashboard() {
             <Users className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
+            <div className="text-2xl font-bold">-</div>
           </CardContent>
         </Card>
         <Card className="bg-slate-900 border-slate-800">
@@ -49,7 +58,7 @@ export default function Dashboard() {
             <HelpCircle className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">24</div>
+            <div className="text-2xl font-bold">-</div>
           </CardContent>
         </Card>
         <Card className="bg-slate-900 border-slate-800">
@@ -58,18 +67,28 @@ export default function Dashboard() {
             <Trophy className="h-4 w-4 text-indigo-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">128</div>
+            <div className="text-2xl font-bold">-</div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Active Quizzes List placeholder */}
       <Card className="bg-slate-900 border-slate-800">
         <CardHeader>
           <CardTitle>Recent Quizzes</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-slate-400 text-sm">Loading quizzes...</div>
+          {quizzes.length === 0 ? (
+             <div className="text-slate-400 text-sm">No recent quizzes. Create one above.</div>
+          ) : (
+            <ul className="space-y-2">
+              {quizzes.slice(0, 5).map(quiz => (
+                <li key={quiz.id} className="flex justify-between items-center text-sm border-b border-slate-800 pb-2 last:border-0 last:pb-0">
+                  <span className="text-slate-300 font-medium">{quiz.title}</span>
+                  <Link to={`/admin/quizzes/${quiz.id}`} className="text-indigo-400 hover:underline">View</Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
     </div>
